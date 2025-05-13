@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ECommerce.API.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Controllers
 {
@@ -7,16 +9,35 @@ namespace ECommerce.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetProduct()
+        private readonly AppDbContext _context;
+
+        public ProductsController(AppDbContext context)
         {
-            return Ok("Get all products");
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProduct()
+        {
+            var products = await _context.Products.ToListAsync();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProducts(int id)
+        public async Task<IActionResult> GetProducts(int? id)
         {
-            return Ok($"Get product with id {id}");
+            if(id == null)
+            {
+                return BadRequest("Id cannot be null");
+            }
+            var product = await _context.Products.FindAsync(id);
+
+            if(product == null)
+            {
+                return NotFound($"Product with id {id} not found");
+            }
+
+            return Ok(product);
         }
     }
 }
