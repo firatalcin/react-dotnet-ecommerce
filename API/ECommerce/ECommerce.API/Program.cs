@@ -10,6 +10,18 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     var connectionString = config.GetConnectionString("DefaultConnection");
     opt.UseSqlite(connectionString);
 });
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .WithOrigins("http://localhost:3000");
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -27,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 
