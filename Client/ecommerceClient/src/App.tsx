@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IProduct } from "./model/IProduct";
 
 function App() {
 
@@ -18,11 +19,7 @@ function Header(){
 
 function ProductList(){
 
-  const  [products, setProducts] = useState([
-     {id: 1,name: "product 1", price: 1000, isActive:true},
-     {id: 2,name: "product 2", price: 2000, isActive:true},
-     {id: 3,name: "product 3", price: 3000, isActive:true},
-  ])
+  const  [products, setProducts] = useState<IProduct[]>([])
 
   useEffect(() => {
   fetch("https://localhost:7017/api/Products")
@@ -32,7 +29,13 @@ function ProductList(){
  
 
   function addProduct(){
-    setProducts([...products, {id: 4,name: "product 4", price: 4000, isActive:true}])
+    setProducts([...products, 
+      {
+        id: 4,
+        name: "product 4",
+        price: 4000, 
+        isActive:true       
+        }])
   }
 
   return(
